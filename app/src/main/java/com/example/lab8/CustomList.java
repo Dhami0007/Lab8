@@ -1,56 +1,70 @@
 package com.example.lab8;
 
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+
+//import org.junit.Before;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
-public class CustomList extends ArrayAdapter<City> {
+public class CustomListTest {
 
-    private ArrayList<City> cities;
-    private Context context;
-
-    public CustomList(Context context, ArrayList<City> cities) {
-        super(context, 0, cities);
-        this.cities = cities;
-        this.context = context;
+    private CustomList list;
+    /**
+     * create a mocklist for my citylist
+     * @return
+     */
+    public CustomList MockCityList(){
+        list = new CustomList(null,new ArrayList<>());
+        return list;
     }
 
-    @NonNull
-    @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-
-        View view = convertView;
-
-        if(view == null){
-            view = LayoutInflater.from(context).inflate(R.layout.content, parent,false);
-        }
-
-        City city = cities.get(position);
-
-        TextView cityName = view.findViewById(R.id.city_text);
-        TextView provinceName = view.findViewById(R.id.province_text);
-
-        cityName.setText(city.getCityName());
-        provinceName.setText(city.getProvinceName());
-
-        return view;
-
+    /**
+     * get the size of the list
+     * increase the list by adding a new city
+     * check if our current size matches the initial size plus
+     one
+     */
+    @Test
+    public void addCityTest(){
+        list = MockCityList();
+        int listSize = list.getCount();
+        list.addCity(new City("Estevan", "SK"));
+        assertEquals(list.getCount(),listSize + 1);
     }
 
-    public int getCount(){
-        return cities.size();
+
+    /**
+     * get the size of the list
+     * decrease the list by delete an existing city
+     * check if our current size matches the initial size plus
+     one
+     */
+    @Test
+    public void deleteCityTest(){
+        list = MockCityList();
+        int listSize = list.getCount();
+        list.addCity(new City("Estevan", "SK"));
+        list.deleteCity(new City("Estevan", "SK"));
+        assertEquals(list.getCount(),listSize);
     }
 
-    public void addCity(City city){
 
+    /**
+     * get the size of the list
+     * increase the list by adding a new city
+     * check if our current size matches the initial size plus
+     one
+     */
+    @Test
+    public void hasCityTest(){
+        list = MockCityList();
+        int listSize = list.getCount();
+        list.addCity(new City("Estevan", "SK"));
+        boolean  value = list.hasCity(new City("Estevan", "SK"));
+        assertEquals(value,true);
     }
-
 }
