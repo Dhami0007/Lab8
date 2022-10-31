@@ -1,70 +1,84 @@
 package com.example.lab8;
 
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-
-//import org.junit.Before;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
-public class CustomListTest {
+public class CustomList extends ArrayAdapter<City> {
 
-    private CustomList list;
+    private ArrayList<City> cities;
+    private Context context;
+
+    public CustomList(Context context, ArrayList<City> cities) {
+        super(context, 0, cities);
+        this.cities = cities;
+        this.context = context;
+    }
+
+    @NonNull
+    @Override
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+
+        View view = convertView;
+
+        if(view == null){
+            view = LayoutInflater.from(context).inflate(R.layout.content, parent,false);
+        }
+
+        City city = cities.get(position);
+
+        TextView cityName = view.findViewById(R.id.city_text);
+        TextView provinceName = view.findViewById(R.id.province_text);
+
+        cityName.setText(city.getCityName());
+        provinceName.setText(city.getProvinceName());
+
+        return view;
+
+    }
+
     /**
-     * create a mocklist for my citylist
+     * this gets size of the list
+     * @return
+     * size of the list of cities
+     */
+    public int getCount(){
+        return cities.size();
+    }
+
+    /**
+     * this adds a city object to the list
+     *for the first phase it will be empty
+     * @param city
+     */
+    public void addCity(City city){
+        cities.add(city);
+    }
+
+    /**
+     * this deletes the city object from  the list
+     * @param city
+     */
+    public void deleteCity(City city){
+        cities.remove(city);
+    }
+
+    /**
+     * this tells if the city is already in the list
+     *for the first phase it will be False
+     * @param city
      * @return
      */
-    public CustomList MockCityList(){
-        list = new CustomList(null,new ArrayList<>());
-        return list;
+    public boolean hasCity(City city){
+        return cities.contains(city);
     }
 
-    /**
-     * get the size of the list
-     * increase the list by adding a new city
-     * check if our current size matches the initial size plus
-     one
-     */
-    @Test
-    public void addCityTest(){
-        list = MockCityList();
-        int listSize = list.getCount();
-        list.addCity(new City("Estevan", "SK"));
-        assertEquals(list.getCount(),listSize + 1);
-    }
-
-
-    /**
-     * get the size of the list
-     * decrease the list by delete an existing city
-     * check if our current size matches the initial size plus
-     one
-     */
-    @Test
-    public void deleteCityTest(){
-        list = MockCityList();
-        int listSize = list.getCount();
-        list.addCity(new City("Estevan", "SK"));
-        list.deleteCity(new City("Estevan", "SK"));
-        assertEquals(list.getCount(),listSize);
-    }
-
-
-    /**
-     * get the size of the list
-     * increase the list by adding a new city
-     * check if our current size matches the initial size plus
-     one
-     */
-    @Test
-    public void hasCityTest(){
-        list = MockCityList();
-        int listSize = list.getCount();
-        list.addCity(new City("Estevan", "SK"));
-        boolean  value = list.hasCity(new City("Estevan", "SK"));
-        assertEquals(value,true);
-    }
 }
